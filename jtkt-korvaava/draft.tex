@@ -1,0 +1,53 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage[alphabetic]{amsrefs}
+\usepackage[utf8]{inputenc}
+
+\linespread{1.213}
+
+\begin{document}
+
+\title{Kaatumaan suunnitellut järjestelmät}
+\author{Tuomas Starck}
+\maketitle
+
+\vspace{5.5em}
+
+George Candea ja Armando Fox julkaisivat vuonna 2003 paperin "Crash-only Software"\cite{cos}, jossa he ehdottivat kaatumaan suunniteltuja oh\-jel\-mi\-a (engl. crash-only software) ratkaisuksi Internet-palveluiden luotettavuuden ja saatavuuden parantamiseen. Innoitus heidän työlleen sai alkunsa kahdesta havainnosta: Ensinnäkin monet järjestelmät kaatuvat ja toipuvat nopeammin kuin niiden hallittuun alasajoon ja uudelleenkäynnistykseen kuluisi aikaa. Toiseksi on olemassa monta tapaa, kuinka ohjelman suoritus loppuu kuten esimerkiksi hallittu lopetus, kaatuminen tai jumiutuminen.
+
+Kaatumaan suunnitellun ohjelman voi kuvata kahdella korkean tason säännöllä: ohjelman pysäyttäminen tarkoittaa samaa kuin kaatuminen ja käynnistäminen samaa kuin toipuminen. Jos ohjelma on suunniteltu kaatumaan turvallisesti, voi ohjelman suorituksen lopetuksen pelkistää siten, etteivät muut vaihtoehdot ole enää tarpeellisia, ja ohjelman hallinta muuttuu yksinkertaisemmaksi, sillä siihen tarvitaan vain rajapinta ohjelman pysäyttämiseen ja käynnistämiseen. Yksinkertaisuus on käytännöllistä, sillä niistä on helpompi rakentaa suurempi järjestelmä. Toinen saavutettava etu on se, että poikkeavien tilanteiden käsittely ja sitä suorittavan koodin testaus on vaikeaa. Kun poikkeuskäsittelykoodi suoritetaan aina ohjelman käynnistyessä, pitäisi mahdollisten ongelmien paljastua herkemmin ja niiden korjaaminen on helpompaa.
+
+Kaatumaan suunniteltu järjestelmä koostuu ohjelmistokomponenteista, jotka kaikki itsessään ovat suunniteltu kaatumaan. Jotta komponentti on kaatumaan suunniteltu, on sen toteutettava joukko ehtoja. Ensinnäkin kaikki oleellinen säilytettävä tieto tulee tallentaa tarkoitukseen omistettuun järjestelmään, ja sovellukseen jää vain tarvittava ohjelmalogiikka. Tämä vaatimus on sinäänsä helppo, että merkittävä osa nykyisistä Internet-järjestelmistä käyttää erillistä transaktioita tukevaa tietokantaa tiedon tallentamiseen. Tietoa tallentavan järjestelmän ei täydy olla nimenomaisesti ACID-täydellinen relaatiotietokanta, vaan se voi olla esimerkiksi hajautettu tiedostojärjestelmä, jos se palvelee käyttötarkoitusta paremmin. Mutta tallennusjärjestelmän täytyy olla suunniteltu kaatumaan tai muutoin alkuperäinen ongelma vaan siirtyy yhden abstraktiotason alemmas.
+
+Kaatumaan suunnitelluilla komponenteilla tulee olla ulkoa käsin määritellyt ja valvotut rajat, jotka eristävät virheet tehokkaasti. Tällaisia eristäviä rakenteita ovat esimerkiksi käyttöjärjestelmän prosessit tai virtuaalikoneet. Erityisesti jäljemmät ovat yleistyneet ja standardisoituneet Internet-palveluiden perustavanlaatuisiksi rakennuspalikoiksi sen reilun kymmenen vuoden aikana, joka on kulunut Candean ja Foxin paperin julkaisun jälkeen.
+
+Kaikki kaatumaan suunniteltujen komponenttien vuorovaikutus on aikakatkaistava. Tämä on tärkeä sääntö, sillä liian pitkään kestävä pyyntö voi olla merkki siitä, että kohdekomponentti on kaatunut. Tällöin aikakatkaisusta tulee viestiä järjestelmää tarkkailevalle ja hallinnoivalle agentille, joka käynnistää viallisen komponentin uudestaan.
+
+Kaikki kaatumaan suunnitellun komponentin käyttämät resurssit tulee olla vain lainassa väliaikaisesti. Tämä vaatimus tarkoittaa esimerkiksi sitä, että komponentin kaatuessa kaikki sen varaamat resurssit vapautuvat luotettavasti. Laina-aika on aina rajallinen, joka käytännössä rajoittaa myös komponentin elinikää. Se ei haittaa, sillä yksittäisen komponentin voi aina käynnistää uudelleen, mutta resurssien vuotaminen johtaisi koko järjestelmän kaatumiseen tai jumiutumiseen.
+
+Viimeinen vaatimus on se, että työpyynnöt kuvaavat itsensä kokonaisuudessaan, jolloin vasta käynnistynyt komponentti voi käsitellä työpyynnön ilman, että sen tarvitsee ensin kerätä tilatietoa. Lisäksi työpyynnön mukana tulee olla tieto siitä, aiheuttaako se idempotentin muutoksen vai ei, ja kuinka pitkään työpyyntö voi elää järjestelmässä. Erityisesti idempotentin työpyynnön tapaus on helppo, sillä virheen tapahtuessa sen voi vapaasti tehdä uudelleen. Muussa tapauksessa järjestelmän tulee valita, pitääkö virhetilanne sietää tai kuinka siitä toivutaan.
+
+\vspace{5.5em}
+
+\paragraph{Sanoja:} 456
+
+\begin{bibdiv}
+\begin{biblist}
+
+\bib{cos}{article}{
+author = {Candea G.{,} Armando F.},
+title = {Crash-only Software},
+booktitle = {Proceedings of the 9th Conference on Hot Topics in Operating Systems - Volume 9},
+series = {HOTOS'03},
+year = {2003},
+pages = {67--72},
+url = {http://dl.acm.org/citation.cfm?id=1251054.1251066},
+publisher = {USENIX Association},
+address = {Berkeley, CA, USA},
+eprint = {https://www.usenix.org/legacy/events/hotos03/tech/full_papers/candea/candea.pdf}
+}
+
+\end{biblist}
+\end{bibdiv}
+
+\end{document}
